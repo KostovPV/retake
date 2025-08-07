@@ -9,11 +9,12 @@ Tracks the current development progress.
 - Implement Home view with top actor pair logic  
 - Implement Movie view with movie details and cast  
 - Implement Actor view with edit and delete functionality  
+- Actor creation form  
+- Movie basic CRUD operations
 
 ## In Progress
 
-- Actor creation form  
-- Movie and role management (basic CRUD operations)  
+- Role basic CRUD operations
 
 ## Upcoming Tasks
 

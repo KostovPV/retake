@@ -1,67 +1,100 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { DataContext } from "../context/DataContext";
-import { formatDate } from "../utils/formatDate";
+
+import { convertToStorageDate, convertToEuropeanDate } from "../utils/dateUtils";
+import MovieList from "../components/MovieList";
+import MovieCreate from "../components/MovieCreate";
+import MovieDetails from "../components/MovieDetails";
 
 function MovieView() {
-    const { movies, roles, actors } = useContext(DataContext);
-    console.log('movies', movies);
-    console.log('roles', roles);
+  const { movies, roles, actors, updateMovies } = useContext(DataContext);
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [editData, setEditData] = useState({ Title: "", ReleaseDate: "" });
 
+  const handleSelectMovie = (id) => {
+    setSelectedMovieId(String(id));
+    setIsEditing(false);
+    setIsCreating(false);
+  };
 
-    const [selectedMovieId, setSelectedMovieId] = useState(null);
+  const selectedMovie = movies.find((m) => String(m.ID) === String(selectedMovieId));
+  const selectedRoles = roles.filter((r) => String(r.MovieID) === String(selectedMovieId));
 
-    const handleSelectMovie = (id) => {
-        setSelectedMovieId(String(id));
-    };
+  const handleEditClick = () => {
+    setEditData({
+      Title: selectedMovie.Title,
+      ReleaseDate: convertToEuropeanDate(selectedMovie.ReleaseDate),
+    });
+    setIsEditing(true);
+  };
 
-
-    const selectedMovie = movies.find((m) => String(m.ID) === String(selectedMovieId));
-
-    const selectedRoles = roles.filter((r) => String(r.MovieID) === String(selectedMovieId));
-
-    console.log("selectedRoles", selectedRoles.map(r => ({ ...r })));
-
-
-    return (
-        <div className="movie-view">
-            <h2>Movie List</h2>
-            {movies.length > 0 ? (
-                <ul>
-                    {movies.map((movie) => (
-                        <li key={movie.ID} onClick={() => handleSelectMovie(movie.ID)}>
-                            {movie.Title}
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>Loading movies...</p>
-            )}
-
-            {selectedMovie && (
-                <div style={{ marginTop: "20px", borderTop: "1px solid #ccc", paddingTop: "10px" }}>
-                    <h3>{selectedMovie.Title}</h3>
-                    <p>
-                        <strong>Release Date:</strong> {formatDate(selectedMovie.ReleaseDate)}
-                    </p>
-                    <h4>Cast</h4>
-                    {selectedRoles.length > 0 ? (
-                        <ul>
-                            {selectedRoles.map((role) => {
-                                const actor = actors.find((a) => String(a.ID) === String(role.ActorID));
-                                return (
-                                    <li key={role.ID}>
-                                        {actor ? actor.FullName : "Unknown Actor"} — {role.RoleName || "Unnamed"}
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    ) : (
-                        <p>No cast available.</p>
-                    )}
-                </div>
-            )}
-        </div>
+  const handleSaveEdit = () => {
+    const updated = movies.map((m) =>
+      String(m.ID) === String(selectedMovieId)
+        ? {
+            ...m,
+            Title: editData.Title,
+            ReleaseDate: convertToStorageDate(editData.ReleaseDate),
+          }
+        : m
     );
+    updateMovies(updated);
+    setIsEditing(false);
+    setSelectedMovieId(selectedMovieId); // Reselect to trigger re-render
+  };
+
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete this movie?")) {
+      const updated = movies.filter((m) => String(m.ID) !== String(selectedMovieId));
+      updateMovies(updated);
+      setSelectedMovieId(null);
+      setIsEditing(false);
+    }
+  };
+
+  const handleCreateClick = () => {
+    setEditData({ Title: "", ReleaseDate: "" });
+    setIsCreating(true);
+    setSelectedMovieId(null);
+  };
+
+  const handleCreateSave = (newMovie) => {
+    const updated = [...movies, newMovie];
+    updateMovies(updated);
+    setIsCreating(false);
+    setSelectedMovieId(newMovie.ID);
+  };
+
+  return (
+    <div className="movie-view">
+      <h2>Movie List</h2>
+      <button onClick={handleCreateClick}>Create New Movie</button>
+      {isCreating && (
+        <MovieCreate
+          onSave={handleCreateSave}
+          onCancel={() => setIsCreating(false)}
+          existingMovies={movies}
+        />
+      )}
+      <MovieList movies={movies} selectedMovieId={selectedMovieId} onSelect={handleSelectMovie} />
+      {selectedMovie && !isCreating && (
+        <MovieDetails
+          movie={selectedMovie}
+          roles={selectedRoles}
+          actors={actors}
+          isEditing={isEditing}
+          editData={editData}
+          setEditData={setEditData}
+          onEditClick={handleEditClick}
+          onSaveEdit={handleSaveEdit}
+          onCancelEdit={() => setIsEditing(false)}
+          onDelete={handleDelete}
+        />
+      )}
+    </div>
+  );
 }
 
 export default MovieView;

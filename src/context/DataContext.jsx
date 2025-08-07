@@ -48,8 +48,15 @@ const updateActors = (newActors) => {
   localStorage.setItem("actors", JSON.stringify(newActors));
 };
 
+const updateMovies = (newMovies) => {
+  setMovies(newMovies);
+  localStorage.setItem("movies", JSON.stringify(newMovies));
+};
+
+
+
   return (
-    <DataContext.Provider value={{ actors, movies, roles, updateActors }}>
+    <DataContext.Provider value={{ actors, movies, roles, updateActors, updateMovies }}>
       {children}
     </DataContext.Provider>
   );

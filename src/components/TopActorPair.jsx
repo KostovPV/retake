@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { formatDate } from '../utils/formatDate'; // adjust path if needed
+import { convertToEuropeanDate } from "../utils/dateUtils";
+
 
 function TopActorPair({ actors, roles, movies }) {
   const topPair = useMemo(() => {
@@ -57,7 +58,7 @@ function TopActorPair({ actors, roles, movies }) {
     const sharedMovies = Object.entries(sharedMovieIDs)
       .filter(([_, actorSet]) => actorSet.has(id1) && actorSet.has(id2))
       .map(([movieID]) => movies.find(movie => movie.ID === movieID))
-      .filter(Boolean); // just in case
+      .filter(Boolean); 
 
     return {
       actor1,
@@ -81,7 +82,7 @@ function TopActorPair({ actors, roles, movies }) {
       <ul>
         {topPair.sharedMovies.map((movie) => (
           <li key={movie.ID}>
-            {movie.Title} — <em>{formatDate(movie.ReleaseDate)}</em>
+            {movie.Title} — <em>{convertToEuropeanDate(movie.ReleaseDate)}</em>
           </li>
         ))}
       </ul>
