@@ -6,22 +6,28 @@ Tracks the current development progress.
 
 - Load and parse CSV files  
 - Store parsed data in localStorage  
+- Support multiple date formats  
+- Allow null Role field (unnamed roles)
 - Implement Home view with top actor pair logic  
 - Implement Movie view with movie details and cast  
-- Implement Actor view with edit and delete functionality  
-- Actor creation form  
-- Movie basic CRUD operations
+- Implement Actor view with actor details, role management  
+- Actor creation, edit, delete functionality  
+- Movie CRUD operations (create, edit, delete)  
+- Role CRUD operations (add, edit, delete)  
+- Search functionality for actors and movies
 
 ## In Progress
 
-- Role basic CRUD operations
+- Style components (CSS, responsive layout)  
+- UI/UX improvements  
+- Code cleanup and component reuse
 
 ## Upcoming Tasks
 
-- Add search and filter functionality for actors and movies  
 - Improve error handling and support for edge cases  
-- Style components (CSS, responsive layout)  
 - Add modals for editing/creating items  
-- Clean up code and split into reusable components (e.g. buttons, forms)  
+- Create README.md with explanation and algorithm  
+- Final test and polish before submission
+
 
 
