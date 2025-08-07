@@ -12,6 +12,8 @@ function MovieView() {
   const [isEditing, setIsEditing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [editData, setEditData] = useState({ Title: "", ReleaseDate: "" });
+  const [searchTerm, setSearchTerm] = useState("");
+
 
   const handleSelectMovie = (id) => {
     setSelectedMovieId(String(id));
@@ -34,10 +36,10 @@ function MovieView() {
     const updated = movies.map((m) =>
       String(m.ID) === String(selectedMovieId)
         ? {
-            ...m,
-            Title: editData.Title,
-            ReleaseDate: convertToStorageDate(editData.ReleaseDate),
-          }
+          ...m,
+          Title: editData.Title,
+          ReleaseDate: convertToStorageDate(editData.ReleaseDate),
+        }
         : m
     );
     updateMovies(updated);
@@ -70,6 +72,14 @@ function MovieView() {
   return (
     <div className="movie-view">
       <h2>Movie List</h2>
+      <input
+        type="text"
+        placeholder="Search movies..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{ marginBottom: "10px", padding: "5px", width: "200px" }}
+      />
+
       <button onClick={handleCreateClick}>Create New Movie</button>
       {isCreating && (
         <MovieCreate
@@ -78,7 +88,7 @@ function MovieView() {
           existingMovies={movies}
         />
       )}
-      <MovieList movies={movies} selectedMovieId={selectedMovieId} onSelect={handleSelectMovie} />
+      <MovieList movies={movies} selectedMovieId={selectedMovieId} onSelect={handleSelectMovie} searchTerm={searchTerm} />
       {selectedMovie && !isCreating && (
         <MovieDetails
           movie={selectedMovie}

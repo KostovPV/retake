@@ -9,6 +9,8 @@ function ActorView() {
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState({ FullName: "", Birthdate: "" });
     const [newActor, setNewActor] = useState({ FullName: "", Birthdate: "" });
+    const [searchTerm, setSearchTerm] = useState("");
+
 
     const handleSelectActor = (id) => {
         setSelectedActorId(String(id));
@@ -86,6 +88,14 @@ function ActorView() {
 
     return (
         <div className="actor-view">
+            <input
+                type="text"
+                placeholder="Search actors..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{ marginBottom: "10px", padding: "5px", width: "200px" }}
+            />
+
             <h2>Actor List</h2>
 
             {/* Create New Actor */}
@@ -107,18 +117,23 @@ function ActorView() {
             {/* Actor List */}
             {actors.length > 0 ? (
                 <ul>
-                    {actors.map((actor) => (
-                        <li
-                            key={actor.ID}
-                            onClick={() => handleSelectActor(actor.ID)}
-                            style={{
-                                cursor: "pointer",
-                                fontWeight: actor.ID === selectedActorId ? "bold" : "normal",
-                            }}
-                        >
-                            {actor.FullName}
-                        </li>
-                    ))}
+                    {actors
+                        .filter((actor) =>
+                            actor.FullName.toLowerCase().includes(searchTerm.toLowerCase())
+                        )
+                        .map((actor) => (
+
+                            <li
+                                key={actor.ID}
+                                onClick={() => handleSelectActor(actor.ID)}
+                                style={{
+                                    cursor: "pointer",
+                                    fontWeight: actor.ID === selectedActorId ? "bold" : "normal",
+                                }}
+                            >
+                                {actor.FullName}
+                            </li>
+                        ))}
                 </ul>
             ) : (
                 <p>Loading actors...</p>
