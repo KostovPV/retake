@@ -1,0 +1,29 @@
+.movie-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.create-btn {
+  padding: 0.5rem 1rem;
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.create-btn:hover {
+  background-color: #1a357d;
+}
+
+.movie-search {
+  padding: 0.5rem;
+  min-width: 200px;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}

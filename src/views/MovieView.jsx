@@ -4,7 +4,8 @@ import { DataContext } from "../context/DataContext";
 import { convertToStorageDate, convertToEuropeanDate } from "../utils/dateUtils";
 import MovieList from "../components/MovieList";
 import MovieCreate from "../components/MovieCreate";
-import MovieDetails from "../components/MovieDetails";
+import MovieModal from "../components/MovieModal"; 
+import './MovieView.css';
 
 function MovieView() {
   const { movies, roles, actors, updateMovies } = useContext(DataContext);
@@ -13,7 +14,6 @@ function MovieView() {
   const [isCreating, setIsCreating] = useState(false);
   const [editData, setEditData] = useState({ Title: "", ReleaseDate: "" });
   const [searchTerm, setSearchTerm] = useState("");
-
 
   const handleSelectMovie = (id) => {
     setSelectedMovieId(String(id));
@@ -44,7 +44,6 @@ function MovieView() {
     );
     updateMovies(updated);
     setIsEditing(false);
-    setSelectedMovieId(selectedMovieId); // Reselect to trigger re-render
   };
 
   const handleDelete = () => {
@@ -69,18 +68,26 @@ function MovieView() {
     setSelectedMovieId(newMovie.ID);
   };
 
+  const closeModal = () => {
+    setSelectedMovieId(null);
+    setIsEditing(false);
+  };
+
   return (
     <div className="movie-view">
       <h2>Movie List</h2>
-      <input
-        type="text"
-        placeholder="Search movies..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{ marginBottom: "10px", padding: "5px", width: "200px" }}
-      />
+      <div className="movie-controls">
+        <button className="create-btn" onClick={handleCreateClick}>Create New Movie</button>
+        <input
+          type="text"
+          placeholder="Search movies..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="movie-search"
+        />
+      </div>
 
-      <button onClick={handleCreateClick}>Create New Movie</button>
+
       {isCreating && (
         <MovieCreate
           onSave={handleCreateSave}
@@ -88,21 +95,28 @@ function MovieView() {
           existingMovies={movies}
         />
       )}
-      <MovieList movies={movies} selectedMovieId={selectedMovieId} onSelect={handleSelectMovie} searchTerm={searchTerm} />
-      {selectedMovie && !isCreating && (
-        <MovieDetails
-          movie={selectedMovie}
-          roles={selectedRoles}
-          actors={actors}
-          isEditing={isEditing}
-          editData={editData}
-          setEditData={setEditData}
-          onEditClick={handleEditClick}
-          onSaveEdit={handleSaveEdit}
-          onCancelEdit={() => setIsEditing(false)}
-          onDelete={handleDelete}
-        />
-      )}
+
+      <MovieList
+        movies={movies}
+        selectedMovieId={selectedMovieId}
+        onSelect={handleSelectMovie}
+        searchTerm={searchTerm}
+      />
+
+      <MovieModal
+        isOpen={!!selectedMovieId}
+        onClose={closeModal}
+        movie={selectedMovie}
+        roles={selectedRoles}
+        actors={actors}
+        isEditing={isEditing}
+        editData={editData}
+        setEditData={setEditData}
+        onEditClick={handleEditClick}
+        onSaveEdit={handleSaveEdit}
+        onCancelEdit={() => setIsEditing(false)}
+        onDelete={handleDelete}
+      />
     </div>
   );
 }
