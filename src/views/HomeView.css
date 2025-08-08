@@ -1,0 +1,11 @@
+.home-view {
+  padding: 2rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 480px) {
+  .home-view {
+    padding: 1rem 0.5rem;
+  }
+}

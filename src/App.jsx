@@ -8,14 +8,14 @@ function App() {
   return (
     <>
       <Header />
-      <Routes>
-        <Route path="/" element={<HomeView />} />
-        <Route path="/movies" element={<MovieView />} />
-        <Route path="/actors" element={<ActorView />} />
-      </Routes>
-
+      <main className="app-container">
+        <Routes>
+          <Route path="/" element={<HomeView />} />
+          <Route path="/movies" element={<MovieView />} />
+          <Route path="/actors" element={<ActorView />} />
+        </Routes>
+      </main>
     </>
-
   );
 }
 

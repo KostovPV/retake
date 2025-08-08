@@ -1,0 +1,102 @@
+.top-actor-pair {
+  background-color: white;
+  padding: 2rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 2rem;
+}
+
+/* Section Title */
+.section-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #1e3a8a;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Actor Pair Names */
+.actor-pair-names {
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.actor-pair-count {
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.icon-title,
+.section-icon {
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  color: #1e3a8a;
+}
+
+/* Shared Movies Header */
+.shared-movies-header {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+/* Movie List */
+.shared-movies-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Movie Card */
+.shared-movie-item {
+  background-color: #f1f5f9;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+}
+
+.movie-title {
+  font-weight: 500;
+}
+
+.movie-date {
+  font-style: italic;
+  color: #555;
+}
+
+/* For small screens*/
+@media (max-width: 480px) {
+  .top-actor-pair {
+    padding: 1.25rem 1rem;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+  }
+
+  .actor-pair-names {
+    font-size: 1.1rem;
+  }
+
+  .shared-movie-item {
+    font-size: 0.95rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .movie-date {
+    font-size: 0.9rem;
+  }
+}

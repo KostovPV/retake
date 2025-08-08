@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
-import { convertToEuropeanDate } from "../utils/dateUtils";
-
+import { convertToEuropeanDate } from '../utils/dateUtils';
+import './TopActorPair.css';
+import { FaUserFriends, FaFilm } from 'react-icons/fa';
 
 function TopActorPair({ actors, roles, movies }) {
   const topPair = useMemo(() => {
@@ -41,48 +42,52 @@ function TopActorPair({ actors, roles, movies }) {
     if (!topPairKey) return null;
 
     const [id1, id2] = topPairKey.split('-');
-    const actor1 = actors.find(actor => actor.ID === id1);
-    const actor2 = actors.find(actor => actor.ID === id2);
+    const actor1 = actors.find((a) => a.ID === id1);
+    const actor2 = actors.find((a) => a.ID === id2);
 
     // Step 4: Get shared movies
     const sharedMovieIDs = roles
-      .filter(role =>
-        role.ActorID === id1 || role.ActorID === id2
-      )
-      .reduce((acc, role) => {
-        if (!acc[role.MovieID]) acc[role.MovieID] = new Set();
-        acc[role.MovieID].add(role.ActorID);
+      .filter((r) => r.ActorID === id1 || r.ActorID === id2)      .reduce((acc, r) => {
+        if (!acc[r.MovieID]) acc[r.MovieID] = new Set();
+        acc[r.MovieID].add(r.ActorID);
         return acc;
       }, {});
 
     const sharedMovies = Object.entries(sharedMovieIDs)
       .filter(([_, actorSet]) => actorSet.has(id1) && actorSet.has(id2))
-      .map(([movieID]) => movies.find(movie => movie.ID === movieID))
-      .filter(Boolean); 
+      .map(([movieID]) => movies.find((m) => m.ID === movieID))
+      .filter(Boolean);
 
     return {
       actor1,
       actor2,
       count: maxCount,
-      sharedMovies
+      sharedMovies,
     };
   }, [actors, roles, movies]);
 
-  if (!topPair) return <div>No top pair found.</div>;
+  if (!topPair) return <div>No top actor pair found.</div>;
 
   return (
-    <div>
-      <h2>Top Actor Pair</h2>
-      <p>
-        <strong>{topPair.actor1.FullName}</strong> and <strong>{topPair.actor2.FullName}</strong>{' '}
-        have co-starred in <strong>{topPair.count}</strong> movies together.
+    <div className="top-actor-pair">
+      <h2 className="section-title">
+        <FaUserFriends className="section-icon" /> Most Frequent Co-Stars
+      </h2>
+      <div className="actor-pair-names">
+        <strong>{topPair.actor1.FullName}</strong> & <strong>{topPair.actor2.FullName}</strong>
+      </div>
+      <p className="actor-pair-count">
+        Appeared together in <strong>{topPair.count}</strong> movies.
       </p>
 
-      <h3>Shared Movies:</h3>
-      <ul>
+      <h3 className="shared-movies-header">
+        <FaFilm className="icon-title" /> Co-Starred Films
+      </h3>
+      <ul className="shared-movies-list">
         {topPair.sharedMovies.map((movie) => (
-          <li key={movie.ID}>
-            {movie.Title} — <em>{convertToEuropeanDate(movie.ReleaseDate)}</em>
+          <li key={movie.ID} className="shared-movie-item">
+            <span className="movie-title">{movie.Title}</span>
+            <span className="movie-date">{convertToEuropeanDate(movie.ReleaseDate)}</span>
           </li>
         ))}
       </ul>
