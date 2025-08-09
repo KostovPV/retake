@@ -7,7 +7,7 @@ function MovieList({ movies, selectedMovieId, onSelect, searchTerm }) {
 
   return (
     <div className="movie-list">
-      <h2 className="movie-list-heading">Movie List</h2>
+      {/* <h2 className="movie-list-heading">Movie List</h2> */}
 
       {filteredMovies.length > 0 ? (
         <div className="movie-grid">

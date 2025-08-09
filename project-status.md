@@ -15,17 +15,17 @@ Tracks the current development progress.
 - Movie CRUD operations (create, edit, delete)  
 - Role CRUD operations (add, edit, delete)  
 - Search functionality for actors and movies
+- Add modals for editing/creating items  
+- Style components (CSS, responsive layout)  
 
 ## In Progress
 
-- Style components (CSS, responsive layout)  
+- Improve error handling and support for edge cases  
 - UI/UX improvements  
-- Code cleanup and component reuse
 
 ## Upcoming Tasks
 
-- Improve error handling and support for edge cases  
-- Add modals for editing/creating items  
+- Code cleanup and component reuse
 - Create README.md with explanation and algorithm  
 - Final test and polish before submission
 

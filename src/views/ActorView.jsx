@@ -1,38 +1,47 @@
 import { useState, useContext } from "react";
 import { DataContext } from "../context/DataContext";
+import ActorCreate from "../components/ActorCreate";
 import ActorModal from "../components/ActorModal";
 import "./ActorView.css";
 
 function ActorView() {
   const { actors, roles, movies, updateActors, updateRoles } = useContext(DataContext);
+
   const [selectedActorId, setSelectedActorId] = useState(null);
   const [isActorModalOpen, setIsActorModalOpen] = useState(false);
-  const [newActor, setNewActor] = useState({ FullName: "", Birthdate: "" });
+  const [isCreating, setIsCreating] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Open/close modal
   const openActorModal = (id) => {
     setSelectedActorId(String(id));
     setIsActorModalOpen(true);
   };
-  const closeActorModal = () => setIsActorModalOpen(false);
-
-  const handleUpdateActor = (updatedActor) => {
-    const updated = actors.map((a) => String(a.ID) === String(updatedActor.ID) ? updatedActor : a);
-    updateActors(updated);
-  };
-
-  const handleDeleteActor = (actorId) => {
-    updateActors(actors.filter((a) => String(a.ID) !== String(actorId)));
-    updateRoles(roles.filter((r) => String(r.ActorID) !== String(actorId)));
+  const closeActorModal = () => {
     setIsActorModalOpen(false);
     setSelectedActorId(null);
   };
 
-  const handleCreateActor = () => {
-    if (!newActor.FullName) return alert("Full name required");
-    const nextId = String(Math.max(0, ...actors.map((a) => Number(a.ID))) + 1);
-    updateActors([...actors, { ID: nextId, ...newActor }]);
-    setNewActor({ FullName: "", Birthdate: "" });
+  const handleCreateClick = () => setIsCreating(true);
+  const handleCreateSave = (newActor) => {
+    updateActors([...actors, newActor]);
+    setIsCreating(false);
+    setSelectedActorId(String(newActor.ID));
+    setIsActorModalOpen(true);
+  };
+
+  const handleUpdateActor = (updatedActor) => {
+    const updated = actors.map((a) =>
+      String(a.ID) === String(updatedActor.ID) ? updatedActor : a
+    );
+    updateActors(updated);
+  };
+
+  const handleDeleteActor = (actorId) => {
+    if (!window.confirm("Are you sure you want to delete this actor?")) return;
+    updateActors(actors.filter((a) => String(a.ID) !== String(actorId)));
+    updateRoles(roles.filter((r) => String(r.ActorID) !== String(actorId)));
+    closeActorModal();
   };
 
   const handleAddRole = (role) => {
@@ -41,7 +50,10 @@ function ActorView() {
   };
 
   const handleUpdateRole = (roleId, updates) => {
-    updateRoles(roles.map((r) => String(r.ID) === String(roleId) ? { ...r, ...updates } : r));
+    const updated = roles.map((r) =>
+      String(r.ID) === String(roleId) ? { ...r, ...updates } : r
+    );
+    updateRoles(updated);
   };
 
   const handleDeleteRole = (roleId) => {
@@ -50,40 +62,49 @@ function ActorView() {
 
   const selectedActor = actors.find((a) => String(a.ID) === String(selectedActorId));
   const actorRoles = roles.filter((r) => String(r.ActorID) === String(selectedActorId));
+  const filteredActors = actors.filter((a) =>
+    a.FullName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="actor-view">
-      <input
-        type="text"
-        placeholder="Search actors..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-
       <h2>Actors</h2>
-      <div className="add-actor-form">
+
+      {/* Controls row */}
+      <div className="actor-controls">
+        <button className="create-btn" onClick={handleCreateClick}>
+          Create New Actor
+        </button>
+
         <input
-          value={newActor.FullName}
-          onChange={(e) => setNewActor({ ...newActor, FullName: e.target.value })}
-          placeholder="Full Name"
+          name="actor-search-field"
+          type="text"
+          placeholder="Search actors..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="actor-search"
         />
-        <input
-          value={newActor.Birthdate}
-          onChange={(e) => setNewActor({ ...newActor, Birthdate: e.target.value })}
-          placeholder="Birthdate"
-        />
-        <button onClick={handleCreateActor}>Create</button>
       </div>
 
+      {/* Create form which to toggle */}
+      {isCreating && (
+        <ActorCreate
+          existingActors={actors}
+          onSave={handleCreateSave}
+          onCancel={() => setIsCreating(false)}
+        />
+      )}
+
+      {/* Actor list (buttons) */}
       <div className="actor-buttons">
-        {actors
-          .filter((a) => a.FullName.toLowerCase().includes(searchTerm.toLowerCase()))
-          .map((a) => (
-            <button key={a.ID} onClick={() => openActorModal(a.ID)}>
-              {a.FullName}
-            </button>
-          ))}
+        {filteredActors.map((a) => (
+          <button key={a.ID} onClick={() => openActorModal(a.ID)}>
+            {a.FullName}
+          </button>
+        ))}
       </div>
+
+      {/* Modal*/}
       <ActorModal
         isOpen={isActorModalOpen}
         onClose={closeActorModal}
