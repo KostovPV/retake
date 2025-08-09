@@ -1,70 +1,28 @@
-import { useState } from "react";
+import "./RoleList.css";
 
-function RoleList({ roles, movies, onDelete, onUpdate }) {
-  const [editingRoleId, setEditingRoleId] = useState(null);
-  const [editData, setEditData] = useState({ MovieID: "", RoleName: "" });
-
-  const startEdit = (role) => {
-    setEditingRoleId(role.ID);
-    setEditData({
-      MovieID: role.MovieID,
-      RoleName: role.RoleName || "",
-    });
-  };
-
-  const cancelEdit = () => {
-    setEditingRoleId(null);
-    setEditData({ MovieID: "", RoleName: "" });
-  };
-
-  const saveEdit = () => {
-    onUpdate(editingRoleId, editData);
-    cancelEdit();
-  };
-
+function RoleList({ roles, movies, onOpenModal }) {
   return (
-    <ul>
-      {roles.length > 0 ? (
-        roles.map((role) => {
-          const movie = movies.find((m) => String(m.ID) === String(role.MovieID));
-
-          if (editingRoleId === role.ID) {
+    <div className="role-list">
+      <table>
+        <thead>
+          <tr>
+            <th>Movie</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          {roles.map((role) => {
+            const movie = movies.find((m) => String(m.ID) === String(role.MovieID));
             return (
-              <li key={role.ID}>
-                <select
-                  value={editData.MovieID}
-                  onChange={(e) => setEditData({ ...editData, MovieID: e.target.value })}
-                >
-                  <option value="">Select movie</option>
-                  {movies.map((m) => (
-                    <option key={m.ID} value={m.ID}>
-                      {m.Title}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  value={editData.RoleName}
-                  onChange={(e) => setEditData({ ...editData, RoleName: e.target.value })}
-                  placeholder="Role Name"
-                />
-                <button onClick={saveEdit}>Save</button>
-                <button onClick={cancelEdit}>Cancel</button>
-              </li>
+              <tr key={role.ID} onClick={() => onOpenModal(role.ID)}>
+                <td>{movie ? movie.Title : "Unknown Movie"}</td>
+                <td>{role.RoleName || "Unnamed"}</td>
+              </tr>
             );
-          }
-
-          return (
-            <li key={role.ID}>
-              {movie ? movie.Title : "Unknown Movie"} — {role.RoleName || "Unnamed"}
-              <button style={{ marginLeft: 10 }} onClick={() => startEdit(role)}>Edit</button>
-              <button style={{ marginLeft: 5 }} onClick={() => onDelete(role.ID)}>Delete</button>
-            </li>
-          );
-        })
-      ) : (
-        <p>No roles assigned.</p>
-      )}
-    </ul>
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

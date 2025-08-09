@@ -1,5 +1,5 @@
-
 import { useState } from "react";
+import './RoleForm.css';
 
 function RoleForm({ actorId, movies, onAddRole }) {
   const [form, setForm] = useState({ MovieID: "", RoleName: "" });
@@ -10,23 +10,18 @@ function RoleForm({ actorId, movies, onAddRole }) {
   };
 
   const handleSubmit = () => {
-    if (!form.MovieID || !form.RoleName) {
-      alert("Both fields are required");
-      return;
-    }
+    if (!form.MovieID || !form.RoleName) return alert("All fields required");
     onAddRole({ ...form, ActorID: actorId });
     setForm({ MovieID: "", RoleName: "" });
   };
 
   return (
-    <div style={{ marginTop: "10px" }}>
+    <div className="role-form">
       <h4>Add Role</h4>
       <select name="MovieID" value={form.MovieID} onChange={handleChange}>
         <option value="">Select movie</option>
         {movies.map((m) => (
-          <option key={m.ID} value={m.ID}>
-            {m.Title}
-          </option>
+          <option key={m.ID} value={m.ID}>{m.Title}</option>
         ))}
       </select>
       <input

@@ -1,0 +1,71 @@
+.actor-view {
+  padding: 2rem;
+}
+
+.actor-view input[type="text"] {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  width: 250px;
+}
+
+.actor-view .add-actor-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.actor-view .add-actor-form input {
+  padding: 0.5rem;
+  flex: 1;
+  min-width: 150px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.actor-view .add-actor-form button {
+  padding: 0.5rem 1rem;
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.actor-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.actor-buttons button {
+  background-color: #f1f5f9;
+  border: none;
+  border-radius: 5px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actor-buttons button.selected {
+  font-weight: bold;
+  background-color: #cbd5e1;
+}
+
+
+@media (max-width: 600px) {
+  .actor-view .add-actor-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actor-view .add-actor-form input,
+  .actor-view .add-actor-form button {
+    width: 100%;
+  }
+}

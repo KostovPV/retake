@@ -1,0 +1,21 @@
+.role-modal {
+  background: #fff;
+  padding: 1rem;
+  min-width: 260px;
+}
+
+.role-modal input,
+.role-modal select {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0 1rem;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+
+.role-modal-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}

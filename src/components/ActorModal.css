@@ -1,0 +1,24 @@
+.actor-modal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  min-width: 300px;
+}
+
+.actor-modal__btns {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.actor-modal__left input {
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .actor-modal {
+    grid-template-columns: 1fr;
+  }
+}

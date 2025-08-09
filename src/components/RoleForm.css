@@ -1,0 +1,26 @@
+.role-form {
+  margin-top: 1.5rem;
+}
+
+.role-form select,
+.role-form input {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.role-form button {
+  padding: 0.5rem 1rem;
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.role-form button:hover {
+  background-color: #3b4eca;
+}
