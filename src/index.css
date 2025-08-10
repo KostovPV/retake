@@ -19,6 +19,77 @@ body {
   padding: 1rem;
 }
 
+/* Wraps (label, input, error) in .form-field*/
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.form-field input,
+.form-field select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.form-field input[aria-invalid="true"],
+.form-field select[aria-invalid="true"] {
+  border-color: #dc2626; 
+  background-color: #fef2f2; 
+}
+
+.error {
+  color: #dc2626;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary {
+  background-color: #1e3a8a;
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: #1e3a8a;
+  border: 1px solid #1e3a8a;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background-color: #f1f5f9;
+}
+
+.btn-disabled,
+button:disabled {
+  background-color: #e5e7eb !important;
+  color: #9ca3af !important;
+  cursor: not-allowed;
+  border-color: #e5e7eb !important;
+}
+
+/* For small button */
+.small {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+
 @media (max-width: 480px) {
   .custom-navbar-container,
   .app-container,

@@ -77,7 +77,6 @@ function MovieView() {
     <div className="movie-view">
       <h2>Movie List</h2>
       <div className="movie-controls">
-        <button className="create-btn" onClick={handleCreateClick}>Create New Movie</button>
         <input
           type="text"
           placeholder="Search movies..."
@@ -85,6 +84,7 @@ function MovieView() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="movie-search"
         />
+        <button className="create-btn" onClick={handleCreateClick}>Create New Movie</button>
       </div>
 
 

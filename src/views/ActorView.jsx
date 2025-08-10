@@ -71,20 +71,19 @@ function ActorView() {
       <h2>Actors</h2>
 
       {/* Controls row */}
-      <div className="actor-controls">
-        <button className="create-btn" onClick={handleCreateClick}>
-          Create New Actor
-        </button>
-
+      <div className="movie-controls">
         <input
-          name="actor-search-field"
           type="text"
           placeholder="Search actors..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="actor-search"
+          className="movie-search"
         />
+        <button className="create-btn" onClick={handleCreateClick}>
+          Create New Actor
+        </button>
       </div>
+
 
       {/* Create form which to toggle */}
       {isCreating && (

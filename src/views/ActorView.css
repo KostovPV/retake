@@ -2,29 +2,6 @@
   padding: 2rem;
 }
 
-
-.actor-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.create-btn {
-  padding: 0.5rem 1rem;
-  background-color: #1e3a8a;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.create-btn:hover {
-  background-color: #1a357d;
-}
-
 .actor-search {
   padding: 0.5rem;
   min-width: 200px;
