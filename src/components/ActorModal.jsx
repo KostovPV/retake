@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Modal from "./Modal";                
+import Modal from "./Modal";
 import RoleForm from "./RoleForm";
 import RoleList from "./RoleList";
 import "./ActorModal.css";
@@ -41,19 +41,43 @@ function ActorModal({
         {isEditing ? (
           <>
             <h3>Edit Actor</h3>
-            <input
-              value={editData.FullName}
-              onChange={(e) => setEditData({ ...editData, FullName: e.target.value })}
-              placeholder="Full Name"
-            />
-            <input
-              value={editData.Birthdate}
-              onChange={(e) => setEditData({ ...editData, Birthdate: e.target.value })}
-              placeholder="Birthdate"
-            />
+            <div className="form-field">
+              <input
+                id="actor-fullname"
+                name="FullName"
+                value={editData.FullName}
+                onChange={(e) =>
+                  setEditData({ ...editData, FullName: e.target.value })
+                }
+                placeholder="Full Name"
+              />
+            </div>
+
+            <div className="form-field">
+              <input
+                id="actor-birthdate"
+                name="Birthdate"
+                value={editData.Birthdate}
+                onChange={(e) =>
+                  setEditData({ ...editData, Birthdate: e.target.value })
+                }
+                placeholder="Birthdate (optional, DD.MM.YYYY)"
+              />
+            </div>
+
             <div className="modal-buttons">
-              <button onClick={handleSave}>Save</button>
-              <button onClick={() => setIsEditing(false)}>Cancel</button>
+              <button
+                onClick={handleSave}
+                className="btn-primary small"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="btn-ghost small"
+              >
+                Cancel
+              </button>
             </div>
           </>
         ) : (
@@ -63,22 +87,26 @@ function ActorModal({
               <strong>Birthdate:</strong> {actor.Birthdate || "Unknown"}
             </p>
             <div className="modal-buttons">
-              <button onClick={() => setIsEditing(true)}>Edit</button>
-              <button onClick={handleDelete}>Delete</button>
+              <button className="btn-primary small" onClick={() => setIsEditing(true)}>
+                Edit
+              </button>
+              <button className="btn-ghost small" onClick={handleDelete}>
+                Delete
+              </button>
             </div>
-
             <h4>Roles</h4>
             <RoleList
               roles={roles}
               movies={movies}
               onUpdate={onUpdateRole}
               onDelete={onDeleteRole}
+              existingRolesForActor={roles}
             />
-
             <RoleForm
               actorId={actor.ID}
               movies={movies}
               onAddRole={onAddRole}
+              existingRolesForActor={roles}
             />
           </>
         )}

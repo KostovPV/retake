@@ -19,3 +19,11 @@
   gap: 0.5rem;
   justify-content: flex-end;
 }
+
+.readonly-field {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #111827;
+}

@@ -5,20 +5,49 @@
   min-width: 300px;
 }
 
+.actor-modal .form-field input {
+  padding: 0.5rem;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
 .modal-buttons {
   display: flex;
   gap: 0.5rem;
   margin: 0.5rem 0 1rem;
 }
 
-.actor-modal__left input {
-  width: 100%;
-  margin: 0.5rem 0;
-  padding: 0.5rem;
+.btn-primary.small,
+.btn-ghost.small {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
 }
+
+.btn-primary.small {
+  background: #1e3a8a;
+  color: #fff;
+  border: none;
+}
+.btn-primary.small:hover { background: #3b4eca; }
+
+.btn-ghost.small {
+  background: transparent;
+  color: #1e3a8a;
+  border: 1px solid #1e3a8a;
+}
+.btn-ghost.small:hover { background: #eef2ff; }
 
 @media (max-width: 640px) {
   .actor-modal {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 600px) {
+  .actor-modal .form-field {
+    min-width: 420px;
   }
 }
