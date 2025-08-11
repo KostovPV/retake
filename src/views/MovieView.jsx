@@ -50,18 +50,21 @@ function MovieView() {
   };
 
   const handleSaveEdit = () => {
-    const updated = movies.map((m) =>
-      String(m.ID) === String(selectedMovieId)
-        ? {
-            ...m,
-            Title: editData.Title,
-            ReleaseDate: convertToStorageDate(editData.ReleaseDate),
-          }
-        : m
-    );
-    updateMovies(updated);
-    setIsEditing(false);
-  };
+  const updated = movies.map((m) =>
+    String(m.ID) === String(selectedMovieId)
+      ? {
+          ...m,
+          Title: editData.Title,
+          ReleaseDate: convertToStorageDate(editData.ReleaseDate),
+        }
+      : m
+  );
+  updateMovies(updated);
+  alert("Movie updated successfully!");
+  setIsEditing(false);
+  setSelectedMovieId(null);
+};
+
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this movie?")) {
@@ -82,7 +85,8 @@ function MovieView() {
     const updated = [...movies, newMovie];
     updateMovies(updated);
     setIsCreating(false);
-    setSelectedMovieId(newMovie.ID);
+    setSelectedMovieId(null);
+    setIsEditing(false);
   };
 
   const closeModal = () => {
@@ -156,6 +160,7 @@ function MovieView() {
         onSaveEdit={handleSaveEdit}
         onCancelEdit={() => setIsEditing(false)}
         onDelete={handleDelete}
+        allMovies={movies} 
       />
     </div>
   );

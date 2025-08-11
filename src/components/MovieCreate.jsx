@@ -1,53 +1,39 @@
 import { useState, useMemo } from "react";
-
-// Convert DD.MM.YYYY -> MM/DD/YYYY for storage
-const toStorageDate = (eu) => {
-  const [dd, mm, yyyy] = eu.split(".");
-  return `${mm}/${dd}/${yyyy}`;
-};
-
-const DATE_RE = /^(0[1-9]|[12]\d|3[01])\.(0[1-9]|1[0-2])\.(19|20)\d\d$/;
+import {
+  buildTitleSet,
+  getTitleError,
+  getReleaseDateError,
+  toStorageDate,
+} from "../utils/validation";
 
 export default function MovieCreate({ onCancel, onSave, existingMovies }) {
   const [form, setForm] = useState({ Title: "", ReleaseDate: "" });
   const [touched, setTouched] = useState({});
 
-  const normalizedTitles = useMemo(
-    () => new Set(existingMovies.map(m => (m.Title || "").trim().toLowerCase())),
-    [existingMovies]
-  );
+  const normalizedTitles = useMemo(() => buildTitleSet(existingMovies), [existingMovies]);
 
   const errors = useMemo(() => {
     const e = {};
-    const title = form.Title.trim();
-    const date = form.ReleaseDate.trim();
+    const titleErr = getTitleError(form.Title, normalizedTitles);
+    if (titleErr) e.Title = titleErr;
 
-    if (!title) e.Title = "Title is required.";
-    else if (normalizedTitles.has(title)) e.Title = "A movie with this title already exists.";
-
-    if (!date) e.ReleaseDate = "Release date is required.";
-    else if (!DATE_RE.test(date)) e.ReleaseDate = "Use DD.MM.YYYY (e.g., 07.09.2020).";
+    const dateErr = getReleaseDateError(form.ReleaseDate);
+    if (dateErr) e.ReleaseDate = dateErr;
 
     return e;
   }, [form, normalizedTitles]);
 
   const disableSave = Object.keys(errors).length > 0;
 
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setForm((f) => ({ ...f, [name]: value }));
-  };
-
-  const onBlur = (e) => {
-    setTouched((t) => ({ ...t, [e.target.name]: true }));
-  };
+  const onChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  const onBlur = (e) => setTouched(t => ({ ...t, [e.target.name]: true }));
 
   const handleSubmit = () => {
     if (disableSave) return;
 
     const nextId =
-      existingMovies.length > 0
-        ? String(Math.max(...existingMovies.map((m) => Number(m.ID))) + 1)
+      (existingMovies?.length ?? 0) > 0
+        ? String(Math.max(...existingMovies.map(m => Number(m.ID))) + 1)
         : "1";
 
     onSave({
@@ -55,6 +41,9 @@ export default function MovieCreate({ onCancel, onSave, existingMovies }) {
       Title: form.Title.trim(),
       ReleaseDate: toStorageDate(form.ReleaseDate.trim()),
     });
+
+    alert("Movie created successfully.");
+    onCancel();
   };
 
   return (
@@ -82,9 +71,7 @@ export default function MovieCreate({ onCancel, onSave, existingMovies }) {
           placeholder="Release Date (DD.MM.YYYY)"
           aria-invalid={!!errors.ReleaseDate}
         />
-        {touched.ReleaseDate && errors.ReleaseDate && (
-          <div className="error">{errors.ReleaseDate}</div>
-        )}
+        {touched.ReleaseDate && errors.ReleaseDate && <div className="error">{errors.ReleaseDate}</div>}
       </div>
 
       <div style={{ display: "flex", gap: ".5rem" }}>

@@ -14,7 +14,7 @@ function ActorView() {
   const [currentPage, setCurrentPage] = useState(1);
   const actorsPerPage = 10;
 
- 
+
   const filteredActors = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     if (!q) return actors;
@@ -43,9 +43,10 @@ function ActorView() {
   const handleCreateSave = (newActor) => {
     updateActors([...actors, newActor]);
     setIsCreating(false);
-    setSelectedActorId(String(newActor.ID));
-    setIsActorModalOpen(true);
+    setSelectedActorId(null);
+    setIsActorModalOpen(false);
   };
+
 
   const handleUpdateActor = (updatedActor) => {
     updateActors(actors.map(a => String(a.ID) === String(updatedActor.ID) ? updatedActor : a));
@@ -125,7 +126,6 @@ function ActorView() {
           </button>
         </div>
       )}
-
       <ActorModal
         isOpen={isActorModalOpen}
         onClose={closeActorModal}
@@ -137,7 +137,9 @@ function ActorView() {
         onAddRole={handleAddRole}
         onUpdateRole={handleUpdateRole}
         onDeleteRole={handleDeleteRole}
+        allActors={actors}
       />
+
     </div>
   );
 }

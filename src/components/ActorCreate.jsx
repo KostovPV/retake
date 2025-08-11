@@ -1,46 +1,38 @@
 import { useState, useMemo } from "react";
+import {
+  buildNameSet,
+  getActorNameError,
+  getBirthdateError,
+} from "../utils/validation";
 import "./ActorCreate.css";
-
-const DATE_RE = /^(0[1-9]|[12]\d|3[01])\.(0[1-9]|1[0-2])\.(19|20)\d\d$/;
 
 export default function ActorCreate({ existingActors, onSave, onCancel }) {
   const [form, setForm] = useState({ FullName: "", Birthdate: "" });
   const [touched, setTouched] = useState({});
 
-  const normalizedNames = useMemo(
-    () => new Set(existingActors.map(a => (a.FullName || "").trim().toLowerCase())),
-    [existingActors]
-  );
+  const normalizedNames = useMemo(() => buildNameSet(existingActors), [existingActors]);
 
   const errors = useMemo(() => {
     const e = {};
-    const name = form.FullName.trim();
-    const birth = form.Birthdate.trim();
+    const nameErr = getActorNameError(form.FullName, normalizedNames);
+    if (nameErr) e.FullName = nameErr;
 
-    if (!name) e.FullName = "Full name is required.";
-    else if (normalizedNames.has(name)) e.FullName = "An actor with this name already exists.";
+    const birthErr = getBirthdateError(form.Birthdate);
+    if (birthErr) e.Birthdate = birthErr;
 
-    if (birth && !DATE_RE.test(birth)) e.Birthdate = "Use DD.MM.YYYY or leave empty.";
     return e;
   }, [form, normalizedNames]);
 
   const disableSave = Object.keys(errors).length > 0;
 
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setForm((f) => ({ ...f, [name]: value }));
-  };
-
-  const onBlur = (e) => {
-    setTouched((t) => ({ ...t, [e.target.name]: true }));
-  };
+  const onChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  const onBlur = (e) => setTouched(t => ({ ...t, [e.target.name]: true }));
 
   const handleSave = () => {
     if (disableSave) return;
-
     const nextId =
-      existingActors.length > 0
-        ? String(Math.max(...existingActors.map((a) => Number(a.ID))) + 1)
+      (existingActors?.length ?? 0) > 0
+        ? String(Math.max(...existingActors.map(a => Number(a.ID))) + 1)
         : "1";
 
     onSave({
@@ -48,6 +40,7 @@ export default function ActorCreate({ existingActors, onSave, onCancel }) {
       FullName: form.FullName.trim(),
       Birthdate: form.Birthdate.trim(),
     });
+    alert("Actor created successfully!");
   };
 
   return (
@@ -58,7 +51,7 @@ export default function ActorCreate({ existingActors, onSave, onCancel }) {
           value={form.FullName}
           onChange={onChange}
           onBlur={onBlur}
-          placeholder="Full Name"
+          placeholder="Full Name (e.g., Tom Hanks)"
           aria-invalid={!!errors.FullName}
         />
         {touched.FullName && errors.FullName && <div className="error">{errors.FullName}</div>}
