@@ -1,19 +1,36 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useMemo, useEffect } from "react";
 import { DataContext } from "../context/DataContext";
 
 import { convertToStorageDate, convertToEuropeanDate } from "../utils/dateUtils";
 import MovieList from "../components/MovieList";
 import MovieCreate from "../components/MovieCreate";
-import MovieModal from "../components/MovieModal"; 
-import './MovieView.css';
+import MovieModal from "../components/MovieModal";
+import "./MovieView.css";
 
 function MovieView() {
   const { movies, roles, actors, updateMovies } = useContext(DataContext);
+
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [editData, setEditData] = useState({ Title: "", ReleaseDate: "" });
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const moviesPerPage = 10;
+
+  const filteredMovies = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
+    if (!q) return movies;
+    return movies.filter((m) => (m.Title || "").toLowerCase().includes(q));
+  }, [movies, searchTerm]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredMovies.length / moviesPerPage));
+  const startIndex = (currentPage - 1) * moviesPerPage;
+  const pagedMovies = filteredMovies.slice(startIndex, startIndex + moviesPerPage);
+
+  useEffect(() => { setCurrentPage(1); }, [searchTerm]);
+  useEffect(() => { if (currentPage > totalPages) setCurrentPage(totalPages); }, [totalPages, currentPage]);
 
   const handleSelectMovie = (id) => {
     setSelectedMovieId(String(id));
@@ -36,10 +53,10 @@ function MovieView() {
     const updated = movies.map((m) =>
       String(m.ID) === String(selectedMovieId)
         ? {
-          ...m,
-          Title: editData.Title,
-          ReleaseDate: convertToStorageDate(editData.ReleaseDate),
-        }
+            ...m,
+            Title: editData.Title,
+            ReleaseDate: convertToStorageDate(editData.ReleaseDate),
+          }
         : m
     );
     updateMovies(updated);
@@ -76,6 +93,7 @@ function MovieView() {
   return (
     <div className="movie-view">
       <h2>Movie List</h2>
+
       <div className="movie-controls">
         <input
           type="text"
@@ -84,9 +102,10 @@ function MovieView() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="movie-search"
         />
-        <button className="create-btn" onClick={handleCreateClick}>Create New Movie</button>
+        <button className="create-btn" onClick={handleCreateClick}>
+          Create New Movie
+        </button>
       </div>
-
 
       {isCreating && (
         <MovieCreate
@@ -97,11 +116,32 @@ function MovieView() {
       )}
 
       <MovieList
-        movies={movies}
+        movies={pagedMovies}
         selectedMovieId={selectedMovieId}
         onSelect={handleSelectMovie}
-        searchTerm={searchTerm}
+        searchTerm=""
       />
+
+      {/* pagination */}
+      {filteredMovies.length > 0 && (
+        <div className="pagination">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       <MovieModal
         isOpen={!!selectedMovieId}
