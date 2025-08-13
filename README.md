@@ -1,12 +1,69 @@
-# React + Vite
+## Movie App
+Overview
+Movie Movie Appr is a React-based web application for managing actors, movies, and roles, and analyzing co-appearances of actor pairs. The app parses CSV files, validates data, and displays insights such as the most frequent co-star pair and their shared movies.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+Key Features
+Data Management
+Import actors, movies, and roles from CSV files (tab-separated).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Local storage persistence for all changes.
 
-## Expanding the ESLint configuration
+Add, edit, and delete actors, movies, and roles directly in the UI.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Validation
+Input validation for names, dates, and duplicates.
+
+Custom error messages for incorrect formats.
+
+Analysis
+Displays the top co-star pair based on shared movie appearances.
+
+Clickable shared movie list opens a modal with movie details and related roles.
+
+Accessibility
+Readable error messages for wrong data formats.
+
+Empty state messages when no data is available.
+
+Getting Started
+Get a copy of the project up and running on your local machine for development and testing purposes.
+
+Clone the repository
+
+bash
+Copy
+Edit
+git clone <your-repo-url>
+Install dependencies
+
+bash
+Copy
+Edit
+npm install
+Run the app locally
+
+bash
+Copy
+Edit
+npm run dev
+Build for production
+
+bash
+Copy
+Edit
+npm run build
+Tech Stack
+React – Dynamic and responsive front-end interface.
+
+LocalStorage – Persistent client-side data storage.
+
+CSV Parsing – Custom CSV parser for importing data.
+
+Screenshots
+Home Page
+
+
+Movies page
+
+Actors Page
