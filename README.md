@@ -31,9 +31,7 @@ The app parses CSV files, validates data, and displays insights such as the most
 - Clear error messages for wrong data formats.
 - Empty state messages when no data is available.
 
----
-
-## Getting Started
+###  Screenshots
 
 ## Home Page
 ![Home Page](./screenshots/home-page.png)
@@ -43,3 +41,9 @@ The app parses CSV files, validates data, and displays insights such as the most
 
 ## Actors Page
 ![Actors Page](./screenshots/actors-page.png)
+
+## Movie Modal
+![Movies Page](./screenshots/movie-modal.png)
+
+## Actor Modal
+![Actors Page](./screenshots/actor-modal.png)
