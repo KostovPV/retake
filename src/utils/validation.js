@@ -36,42 +36,86 @@ export const getReleaseDateError = (s) => {
   const v = normalize(s);
   if (!v) return "Release date is required.";
 
-  const m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(v);
-  if (!m) return "Use DD.MM.YYYY (e.g., 07.09.2020).";
+  // Accept DD.MM.YYYY, MM/DD/YYYY, YYYY-MM-DD, and Month DD YYYY
+  const eu = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/i.exec(v);
+  const us = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/i.exec(v);
+  const iso = /^(\d{4})-(\d{1,2})-(\d{1,2})$/i.exec(v);
 
-  const [, ddStr, mmStr, yyyyStr] = m;
-  const dd = Number(ddStr), mm = Number(mmStr), yyyy = Number(yyyyStr);
-  if (yyyy < 1900 || yyyy > 2099) return "Year must be between 1900 and 2099.";
+  let dd, mm, yyyy;
 
-  const d = new Date(yyyy, mm - 1, dd);
-  const exact = d.getFullYear() === yyyy && d.getMonth() === mm - 1 && d.getDate() === dd;
+  if (eu) {
+    [, dd, mm, yyyy] = eu;
+  } else if (us) {
+    [, mm, dd, yyyy] = us;
+  } else if (iso) {
+    [, yyyy, mm, dd] = iso;
+  } else {
+    // Month DD YYYY or DD Month YYYY (with dots or spaces)
+    const MONTHS = {
+      january:1, jan:1, february:2, feb:2, march:3, mar:3, april:4, apr:4,
+      may:5, june:6, jun:6, july:7, jul:7, august:8, aug:8, september:9, sep:9, sept:9,
+      october:10, oct:10, november:11, nov:11, december:12, dec:12
+    };
+    const tokens = v.replace(/[.,]/g, " ").replace(/\s+/g, " ").trim().split(" ");
+    if (tokens.length >= 3) {
+      const t0 = tokens[0].toLowerCase();
+      const t1 = tokens[1].toLowerCase();
+      const t2 = tokens[2];
+      if (MONTHS[t0] && /^\d{1,2}$/.test(t1) && /^\d{4}$/.test(t2)) {
+        dd = t1; mm = MONTHS[t0]; yyyy = t2;
+      } else if (/^\d{1,2}$/.test(t0) && MONTHS[t1] && /^\d{4}$/.test(t2)) {
+        dd = t0; mm = MONTHS[t1]; yyyy = t2;
+      } else {
+        return "Use a valid date (e.g., 07.09.2020 or 10/19/1996 or 1996-10-19).";
+      }
+    } else {
+      return "Use a valid date (e.g., 07.09.2020 or 10/19/1996 or 1996-10-19).";
+    }
+  }
+
+  const d = Number(dd), m = Number(mm), y = Number(yyyy);
+  if (y < 1900 || y > 2099) return "Year must be between 1900 and 2099.";
+
+  const dt = new Date(y, m - 1, d);
+  const exact = dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
   if (!exact) return "Invalid calendar date.";
 
   const today = new Date(); today.setHours(0,0,0,0);
-  if (d > today) return "Release date cannot be in the future.";
+  if (dt > today) return "Release date cannot be in the future.";
 
   return "";
 };
+
 
 export const getBirthdateError = (s) => {
   const v = normalize(s);
-  if (!v) return ""; // optional
-  const m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(v);
-  if (!m) return "Use DD.MM.YYYY (e.g., 07.09.1980) or leave empty.";
+  if (!v) return ""; 
 
-  const [, ddStr, mmStr, yyyyStr] = m;
-  const dd = Number(ddStr), mm = Number(mmStr), yyyy = Number(yyyyStr);
-  if (yyyy < 1900 || yyyy > 2099) return "Year must be between 1900 and 2099.";
+  const eu = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(v);
+  const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
 
-  const d = new Date(yyyy, mm - 1, dd);
-  const exact = d.getFullYear() === yyyy && d.getMonth() === mm - 1 && d.getDate() === dd;
+  let dd, mm, yyyy;
+  if (eu) {
+    [, dd, mm, yyyy] = eu;
+  } else if (iso) {
+    [, yyyy, mm, dd] = iso;
+  } else {
+    return 'Use DD.MM.YYYY or YYYY-MM-DD (e.g., "07.09.1980" or "1980-09-07"), or leave empty.';
+  }
+
+  const d = Number(dd), m = Number(mm), y = Number(yyyy);
+  if (y < 1900 || y > 2099) return "Year must be between 1900 and 2099.";
+
+  const dt = new Date(y, m - 1, d);
+  const exact = dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
   if (!exact) return "Invalid calendar date.";
 
   const today = new Date(); today.setHours(0,0,0,0);
-  if (d > today) return "Birthdate cannot be in the future.";
+  if (dt > today) return "Birthdate cannot be in the future.";
 
   return "";
 };
+
 
 // ----- actor name -----
 export const getActorNameError = (s, nameSetOrMap, currentId = null) => {

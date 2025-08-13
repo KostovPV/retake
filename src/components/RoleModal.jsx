@@ -15,15 +15,14 @@ export default function RoleModal({
   existingRolesForActor = [],
 }) {
   const fixedMovieID = role.MovieID;
-  const [form, setForm] = useState({
-    RoleName: role.RoleName || "",
-  });
+  const [form, setForm] = useState({ RoleName: role.RoleName || "" });
   const [touched, setTouched] = useState({});
 
   const movieTitle =
     movies.find((m) => String(m.ID) === String(fixedMovieID))?.Title ||
     "Unknown Movie";
-    
+
+  // build set of existing (movie, roleName) pairs for this actor excluding current role
   const existingPairs = useMemo(
     () =>
       new Set(
@@ -40,22 +39,33 @@ export default function RoleModal({
 
   const errors = useMemo(() => {
     const e = {};
-    if (!form.RoleName.trim()) e.RoleName = "Role name is required.";
-    const key = `${fixedMovieID}::${normalize(form.RoleName)}`;
-    if (!e.RoleName && existingPairs.has(key)) {
-      e.RoleName = "This role already exists for this actor in that movie.";
+    const raw = form.RoleName ?? "";
+    const trimmed = raw.trim();
+
+    // Only check duplicate if user actually typed a role name
+    if (trimmed) {
+      const key = `${fixedMovieID}::${normalize(trimmed)}`;
+      if (existingPairs.has(key)) {
+        e.RoleName = "This role already exists for this actor in that movie.";
+      }
     }
+    // No "required" error — empty is allowed (NULL)
     return e;
-  }, [form, fixedMovieID, existingPairs]);
+  }, [form.RoleName, fixedMovieID, existingPairs]);
 
   const disableSave = Object.keys(errors).length > 0;
 
-  const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
-  const onBlur = (e) => setTouched((t) => ({ ...t, [e.target.name]: true }));
+  const onChange = (e) =>
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+
+  const onBlur = (e) =>
+    setTouched((t) => ({ ...t, [e.target.name]: true }));
 
   const handleSave = () => {
     if (disableSave) return;
-    onUpdate(role.ID, { MovieID: fixedMovieID, RoleName: form.RoleName.trim() });
+    const trimmed = (form.RoleName ?? "").trim();
+    const finalRoleName = trimmed === "" ? null : trimmed; // <- allow NULL
+    onUpdate(role.ID, { MovieID: fixedMovieID, RoleName: finalRoleName });
     onClose();
   };
 
@@ -71,7 +81,6 @@ export default function RoleModal({
       <div className="role-modal">
         <h3>Edit Role</h3>
 
-        {/* Read-only movie display */}
         <div className="form-field">
           <label>Movie</label>
           <div className="readonly-field" title="Movie cannot be changed here">
@@ -80,7 +89,7 @@ export default function RoleModal({
         </div>
 
         <div className="form-field">
-          <label>Role Name</label>
+          <label>Role Name <span className="muted">(leave empty for Unnamed)</span></label>
           <input
             name="RoleName"
             value={form.RoleName}

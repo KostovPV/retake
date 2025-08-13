@@ -6,53 +6,63 @@ export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const [actors, setActors] = useState([]);
   const [movies, setMovies] = useState([]);
-  const [roles, setRoles] = useState([]);
+  const [roles,  setRoles ]  = useState([]);
+  const [loading, setLoading] = useState(true); // <- NEW
 
   useEffect(() => {
-    const storedActors = JSON.parse(localStorage.getItem("actors"));
-    const storedMovies = JSON.parse(localStorage.getItem("movies"));
-    const storedRoles = JSON.parse(localStorage.getItem("roles"));
+    let cancelled = false;
 
-    if (storedActors && storedMovies && storedRoles) {
-      setActors(storedActors);
-      setMovies(storedMovies);
-      setRoles(storedRoles);
-    } else {
-      const loadData = async () => {
-        const [actorsText, moviesText, rolesText] = await Promise.all([
-          fetch("/src/data/actors.csv").then((r) => r.text()),
-          fetch("/src/data/movies.csv").then((r) => r.text()),
-          fetch("/src/data/roles.csv").then((r) => r.text()),
-        ]);
+    const finalize = (a, m, r) => {
+      if (cancelled) return;
+      setActors(a);
+      setMovies(m);
+      setRoles(r);
+      setLoading(false);        // <- done
+    };
 
-        const parsedActors = parseCSV(actorsText);
-        const parsedMovies = parseCSV(moviesText);
-        const parsedRoles = parseCSV(rolesText);
+    try {
+      const storedActors = JSON.parse(localStorage.getItem("actors") || "null");
+      const storedMovies = JSON.parse(localStorage.getItem("movies") || "null");
+      const storedRoles  = JSON.parse(localStorage.getItem("roles")  || "null");
 
-        setActors(parsedActors);
-        setMovies(parsedMovies);
-        setRoles(parsedRoles);
+      if (storedActors && storedMovies && storedRoles) {
+        finalize(storedActors, storedMovies, storedRoles);
+      } else {
+        (async () => {
+          const [actorsText, moviesText, rolesText] = await Promise.all([
+            fetch("/src/data/actors.csv").then((r) => r.text()),
+            fetch("/src/data/movies.csv").then((r) => r.text()),
+            fetch("/src/data/roles.csv").then((r) => r.text()),
+          ]);
 
-        // Save to localStorage
-        localStorage.setItem("actors", JSON.stringify(parsedActors));
-        localStorage.setItem("movies", JSON.stringify(parsedMovies));
-        localStorage.setItem("roles", JSON.stringify(parsedRoles));
-      };
+          const parsedActors = parseCSV(actorsText);
+          const parsedMovies = parseCSV(moviesText);
+          const parsedRoles  = parseCSV(rolesText);
 
-      loadData();
+          // Save to localStorage, then finalize state
+          localStorage.setItem("actors", JSON.stringify(parsedActors));
+          localStorage.setItem("movies", JSON.stringify(parsedMovies));
+          localStorage.setItem("roles",  JSON.stringify(parsedRoles));
+
+          finalize(parsedActors, parsedMovies, parsedRoles);
+        })();
+      }
+    } catch {
+      // In case of any parse/storage error, just stop loading to avoid spinner lock
+      setLoading(false);
     }
+
+    return () => { cancelled = true; };
   }, []);
 
   const updateActors = (newActors) => {
     setActors(newActors);
     localStorage.setItem("actors", JSON.stringify(newActors));
   };
-
   const updateMovies = (newMovies) => {
     setMovies(newMovies);
     localStorage.setItem("movies", JSON.stringify(newMovies));
   };
-
   const updateRoles = (newRoles) => {
     setRoles(newRoles);
     localStorage.setItem("roles", JSON.stringify(newRoles));
@@ -60,7 +70,7 @@ export const DataProvider = ({ children }) => {
 
   return (
     <DataContext.Provider
-      value={{ actors, movies, roles, updateActors, updateMovies, updateRoles }}
+      value={{ actors, movies, roles, updateActors, updateMovies, updateRoles, loading }}
     >
       {children}
     </DataContext.Provider>

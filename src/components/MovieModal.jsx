@@ -12,8 +12,8 @@ function MovieModal({
   isOpen,
   onClose,
   movie,
-  roles,
-  actors,
+  roles = [],
+  actors = [],
   isEditing,
   editData,
   setEditData,
@@ -22,12 +22,17 @@ function MovieModal({
   onCancelEdit,
   onDelete,
   allMovies = [],
+
+  // hide view-mode action buttons (Edit/Delete)
+  hideActions = false,
 }) {
   if (!movie) return null;
 
   // other movie titles excluding current
   const otherTitles = useMemo(() => {
-    const others = (allMovies || []).filter(m => String(m.ID) !== String(movie.ID));
+    const others = (allMovies || []).filter(
+      (m) => String(m.ID) !== String(movie.ID)
+    );
     return buildTitleSet(others);
   }, [allMovies, movie?.ID]);
 
@@ -43,9 +48,10 @@ function MovieModal({
 
   const handleSave = () => {
     if (disableSave) return;
-    onSaveEdit();
+    onSaveEdit?.();
   };
 
+  // Render
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="movie-modal">
@@ -56,7 +62,9 @@ function MovieModal({
             <div className="form-field">
               <input
                 value={editData.Title}
-                onChange={(e) => setEditData({ ...editData, Title: e.target.value })}
+                onChange={(e) =>
+                  setEditData({ ...editData, Title: e.target.value })
+                }
                 placeholder="Title"
                 aria-invalid={!!errors.Title}
               />
@@ -66,15 +74,21 @@ function MovieModal({
             <div className="form-field">
               <input
                 value={editData.ReleaseDate}
-                onChange={(e) => setEditData({ ...editData, ReleaseDate: e.target.value })}
+                onChange={(e) =>
+                  setEditData({ ...editData, ReleaseDate: e.target.value })
+                }
                 placeholder="Release Date (DD.MM.YYYY)"
                 aria-invalid={!!errors.ReleaseDate}
               />
-              {errors.ReleaseDate && <div className="error">{errors.ReleaseDate}</div>}
+              {errors.ReleaseDate && (
+                <div className="error">{errors.ReleaseDate}</div>
+              )}
             </div>
 
             <div className="movie-modal-buttons">
-              <button onClick={handleSave} disabled={!!disableSave}>Save</button>
+              <button onClick={handleSave} disabled={!!disableSave}>
+                Save
+              </button>
               <button onClick={onCancelEdit}>Cancel</button>
             </div>
           </>
@@ -82,21 +96,29 @@ function MovieModal({
           <>
             <h3>{movie.Title}</h3>
             <p>
-              <strong>Release Date:</strong> {convertToEuropeanDate(movie.ReleaseDate) || "Unknown"}
+              <strong>Release Date:</strong>{" "}
+              {convertToEuropeanDate(movie.ReleaseDate) || "Unknown"}
             </p>
-            <div className="movie-modal-buttons">
-              <button onClick={onEditClick}>Edit</button>
-              <button onClick={onDelete}>Delete</button>
-            </div>
+
+            {/* View-mode actions — hidden when hideActions is true (e.g., opened from TopActorPair) */}
+            {!hideActions && (
+              <div className="movie-modal-buttons">
+                <button onClick={onEditClick}>Edit</button>
+                <button onClick={onDelete}>Delete</button>
+              </div>
+            )}
 
             <h4>Cast</h4>
             {roles.length > 0 ? (
               <ul>
                 {roles.map((role) => {
-                  const actor = actors.find(a => String(a.ID) === String(role.ActorID));
+                  const actor = actors.find(
+                    (a) => String(a.ID) === String(role.ActorID)
+                  );
                   return (
                     <li key={role.ID}>
-                      {actor ? actor.FullName : "Unknown Actor"} — {role.RoleName || "Unnamed"}
+                      {actor ? actor.FullName : "Unknown Actor"} —{" "}
+                      {role.RoleName || "Unnamed"}
                     </li>
                   );
                 })}
