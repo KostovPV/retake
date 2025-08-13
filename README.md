@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./screenshots/app-icon.png" alt="Movie App Icon" width="120" />
+</p>
+
 # Movie App
 
 ## Overview
