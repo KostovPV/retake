@@ -35,41 +35,11 @@ The app parses CSV files, validates data, and displays insights such as the most
 
 ## Getting Started
 
-Get a copy of the project up and running on your local machine for development and testing purposes.
-
-1. **Clone the repository**
-```bash
-git clone <your-repo-url>
-
-
-2. **Install dependencies**
-```
-npm install
-```
-
-3. **Run app localy**
-```
-npm irun dev
-```
-
-
-#### Screenshots
-
 ## Home Page
-<img width="1920" height="945" alt="Home Page" src="https://github.com/user-attachments/assets/d76dd8ca-c8b9-49b2-a7e1-1cee736028a7" />
+![Home Page](./screenshots/home-page.png)
 
+## Movies Page
+![Movies Page](./screenshots/movies-page.png)
 
-
-
-## Movies page
-<img width="1920" height="1019" alt="Movie Page" src="https://github.com/user-attachments/assets/05e55373-c0be-469f-9940-0e851a8a91ed" />
-
-
-
-
-
-Actors Page
-
-<img width="1920" height="1019" alt="Actor Page" src="https://github.com/user-attachments/assets/192383d9-2249-47a8-9fd9-c4e77c0cb761" />
-
-
+## Actors Page
+![Actors Page](./screenshots/actors-page.png)
