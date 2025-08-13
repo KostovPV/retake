@@ -1,18 +1,10 @@
 # Movie App
 
 ## Overview
-Movie Movie Appr is a React-based web application for managing actors, movies, and roles, and analyzing co-appearances of actor pairs. The app parses CSV files, validates data, and displays insights such as the most frequent co-star pair and their shared movies.
-
-
-## Overview
 Movie App is a React-based web application for managing actors, movies, and roles, and analyzing co-appearances of actor pairs.  
 The app parses CSV files, validates data, and displays insights such as the most frequent co-star pair and their shared movies.
 
-
-=======
-Key Features
-### Data Management
-Import actors, movies, and roles from CSV files (tab-separated)
+---
 
 ## Key Features
 
@@ -29,7 +21,6 @@ Import actors, movies, and roles from CSV files (tab-separated)
 - Input validation for names, dates, and duplicates.
 - Custom error messages for incorrect formats.
 - Supports multiple date formats when importing CSV files.
-
 
 ### **Analysis**
 - Displays the **top co-star pair** based on shared movie appearances.
@@ -49,7 +40,7 @@ Get a copy of the project up and running on your local machine for development a
 1. **Clone the repository**
 ```bash
 git clone <your-repo-url>
-```
+
 
 2. **Install dependencies**
 ```
